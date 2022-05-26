@@ -1,4 +1,22 @@
+h1 {
+    text-align: center;
+}
+
 body {
     background-color: rgb(133, 75, 75);
+    margin: 0;
 
+}
+
+td {
+    width: 21px;
+    height: 21px;
+    padding: 10px;
+
+}
+
+
+
+table {
+    margin: auto;
 }
