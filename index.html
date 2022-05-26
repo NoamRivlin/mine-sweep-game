@@ -9,8 +9,16 @@
   </head>
   <body oncontextmenu="return false" onload="init()">
     <h1 name="title-h1">mine-sweeper</h1>
+    <div class="timer">Timer: <span></span></div>
+    <div class="buttons">
+      <button onclick="chooseDifficulty(4)">Easy</button>
+      <button onclick="chooseDifficulty(8)">Normal</button>
+      <button onclick="chooseDifficulty(12)">Hard</button>
+    </div>
     <div class="board-container"></div>
     <!-- <script src="js/util.js"></script> -->
+
+    <footer>🚩Noam Rivlin🚩</footer>
     <script src="js/app.js"></script>
   </body>
 </html>

@@ -4,19 +4,41 @@ h1 {
 
 body {
     background-color: rgb(133, 75, 75);
-    margin: 0;
+    /* margin: 0; */
+    /* margin: auto; */
 
+
+}
+
+body .timer {
+    text-align: center;
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+td:hover {
+    background-color: rgb(122, 168, 208);
 }
 
 td {
     width: 21px;
     height: 21px;
     padding: 10px;
-
 }
 
-
+.shown {
+    color: rgb(19, 55, 87);
+}
 
 table {
     margin: auto;
+}
+
+footer {
+    margin-top: 80%;
+    text-align: center;
 }
