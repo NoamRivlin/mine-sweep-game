@@ -30,6 +30,17 @@ function init() {
     renderBoard(gBoard, '.board-container')
     // console.table(gBoard)
     console.log(gBoard)
+    clearInterval(gIntervalId)
+    //downard section takes care of reseting the game right
+    var elTimerSpan = document.querySelector('.timer span')
+    elTimerSpan.innerText = ''
+    gGame = {
+        isOn: false,
+        shownCount: 0,
+        markedCount: 0,
+        secsPassed: 0
+    }
+    isTimer = false
 }
 
 
@@ -52,12 +63,17 @@ function buildBoard(SIZE) {
     return board;
 }
 
+
+
+
+
 //placing mines in random places on the board is determined by gLevels.size and how many is determined by the gLevels.mines value 
 function placeMines(gLevels) {
     for (var i = 0; i < gLevels.mines; i++) {
         var randI = getRandomInt(0, gLevels.size)
-        var randj = getRandomInt(0, gLevels.size)
-        gBoard[randI][randj].isMine = true;
+        var randJ = getRandomInt(0, gLevels.size)
+        if (gBoard[randI][randJ].isMine) i--;
+        gBoard[randI][randJ].isMine = true;
     }
 }
 
@@ -99,19 +115,25 @@ function renderBoard(board, selector) {
         for (var j = 0; j < board[0].length; j++) {
             // var className = 'cell' class="${className}" will i need to css all td/cells?
 
+            var strClass = '';
             //creating the display of the cells on DOM
             var cellChar = '';
-            if (board[i][j].isShown)
+            if (board[i][j].isShown) {
+                strClass += 'shown';
                 if (board[i][j].isMine) {
-                    cellChar = MINE
+                    cellChar = MINE;
                 } else {
                     cellChar = board[i][j].minesAroundCount;
 
                 }
-            else if (board[i][j].isMarked) {
-                cellChar = FLAG
             }
-            strHTML += `<td onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(this, ${i}, ${j})"  >${cellChar}</td>`
+            else if (board[i][j].isMarked) {
+                cellChar = FLAG;
+            }
+
+            // build class string
+
+            strHTML += `<td class="${strClass}" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(this, ${i}, ${j})"  >${cellChar}</td>`
         }
 
         strHTML += '</tr>'
@@ -128,22 +150,44 @@ function renderBoard(board, selector) {
 // Called when a cell (td) is clicked 
 function cellClicked(elcell, i, j) {
     if (gBoard[i][j].isShown || gBoard[i][j].isMarked) return
-    gBoard[i][j].isShown = true
-    if (!gBoard[i][j].isMine) {
-        gGame.shownCount++
-    } else {
-        GameOver()
-    }
+    openCell(i, j)
+
     if (gGame.shownCount === 1 && !isTimer) {
         startTimer()
         isTimer = true
     }
-    elcell.style.backgroundColor = 'green' //why isnt working
+
+    if (gBoard[i][j].minesAroundCount === 0) {
+        openNegsCell(i, j)
+    }
     renderBoard(gBoard, '.board-container')
-    checkGameOver()
+
 }
 
+function openNegsCell(i, j) {
+    for (var ii = i - 1; ii <= i + 1; ii++) {
+        for (var jj = j - 1; jj <= j + 1; jj++) {
+            if (ii < 0 ||
+                ii >= gBoard.length ||
+                jj < 0 ||
+                jj >= gBoard.length) continue
+            openCell(ii, jj)
+        }
+    }
+}
 
+function openCell(i, j) {
+    // console.log(i, j);
+    if (!gBoard[i][j].isMine) {
+        if (!gBoard[i][j].isShown) {
+            gBoard[i][j].isShown = true
+            gGame.shownCount++
+            checkGameOver()
+        }
+    } else {
+        GameOver()
+    }
+}
 // Called on right click to mark a cell (suspected to be a mine) Search the web (and implement) how to hide the context menu on right click. menu is diable👌
 function cellMarked(elcell, i, j) {
     if (gBoard[i][j].isShown) return
@@ -174,13 +218,14 @@ function checkGameOver() {
     if (gGame.shownCount === ((gLevels.size ** 2) - gLevels.mines) && gGame.markedCount === gLevels.mines) {
         console.log('over');
         alert('👑')
+        GameOver()
     }
 }
 
 function GameOver() {
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard.length; j++) {
-            gBoard[i][j].isShown = true
+            gBoard[i][j].isShown = true;
             clearInterval(gIntervalId)
 
         }

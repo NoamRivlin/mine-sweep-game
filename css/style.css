@@ -1,44 +1,62 @@
 h1 {
+    background-color: rgb(168, 98, 235);
+    width: 20%;
+    margin: auto;
     text-align: center;
 }
 
 body {
     background-color: rgb(133, 75, 75);
-    /* margin: 0; */
-    /* margin: auto; */
-
-
+    background-image: url('/img/fish&mine.jpg');
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 body .timer {
     text-align: center;
+    background-color: rgb(247, 223, 192);
+    width: 20%;
+    margin: auto;
+    font-size: larger;
 }
 
 .buttons {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
+    padding: 10px;
+    /* font-size: xx-large; */
 }
 
 td:hover {
     background-color: rgb(122, 168, 208);
+    transition: 0.4s;
 }
 
 td {
-    width: 21px;
-    height: 21px;
-    padding: 10px;
+    width: 25px;
+    height: 25px;
+    padding: 13px;
+    /* border: solid; */
 }
 
-.shown {
-    color: rgb(19, 55, 87);
+td.shown {
+    background-color: rgb(98, 153, 81);
+    transition: background-color 1s;
 }
 
 table {
     margin: auto;
+    border-width: 5px;
+    border: solid;
 }
 
 footer {
-    margin-top: 80%;
+    position: fixed;
+    width: 100%;
+    font-size: larger;
+    bottom: 0;
     text-align: center;
+    background-color: aqua;
 }
