@@ -1,18 +1,25 @@
 'use strict'
 
-
+const HP = '💙'
 const FLAG = '🚩'
 const MINE = '💣'
+const START_FACE = '🧐'
+const LOSE_FACE = '🤯'
+const WIN_FACE = '🐱‍🏍'
+
 var gBoard
 var gStartTime
 var gIntervalId
 var isTimer = false
+var winSound = new Audio("sound/winSound.wav")
+var lives = [HP, HP, HP]
+
 
 var gGame = {
     isOn: false,
     shownCount: 0, //how many cells are shown
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0 //not using this key
 }
 
 
@@ -23,11 +30,10 @@ var gLevels = {
 }
 
 function init() {
-    gGame.isOn = true
+    lives = [HP, HP, HP]
     gBoard = buildBoard(gLevels.size)
     placeMines(gLevels);
     setMinesNegsCount(gBoard)
-    renderBoard(gBoard, '.board-container')
     // console.table(gBoard)
     console.log(gBoard)
     clearInterval(gIntervalId)
@@ -35,12 +41,13 @@ function init() {
     var elTimerSpan = document.querySelector('.timer span')
     elTimerSpan.innerText = ''
     gGame = {
-        isOn: false,
+        isOn: true,
         shownCount: 0,
         markedCount: 0,
         secsPassed: 0
     }
     isTimer = false
+    renderBoard(gBoard, '.board-container')
 }
 
 
@@ -107,7 +114,7 @@ function setMinesNegsCount(board) {
 // renderBoard(board)
 //data-i="${i}" data-j="${j}"  // not nessecary but maybe...
 function renderBoard(board, selector) {
-    var strHTML = '<table border="solid"><tbody>';
+    var strHTML = `<table border="solid"><tbody>`;
 
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
@@ -140,8 +147,24 @@ function renderBoard(board, selector) {
     }
     strHTML += '</tbody></table>';
 
-    let elBoard = document.querySelector(selector);
+    var elBoard = document.querySelector(selector);
     elBoard.innerHTML = strHTML;
+    var elTries = document.querySelector('.tries')
+    elTries.innerText = lives
+
+
+    var elSmiley = document.querySelector('.smiley')
+    // if (gGame.shownCount === ((gLevels.size ** 2) - gLevels.mines) && gGame.markedCount === gLevels.mines) {
+    //     elSmiley.innerText = WIN_FACE
+    // }
+    if (lives.length >= 1) {
+        elSmiley.innerText = START_FACE
+    } else if (lives.length === 0) {
+        elSmiley.innerText = LOSE_FACE
+    }
+    //  else if (condition) {
+
+    // }
 
 }
 
@@ -149,6 +172,7 @@ function renderBoard(board, selector) {
 
 // Called when a cell (td) is clicked 
 function cellClicked(elcell, i, j) {
+    //if the cell is shown or is marked do nothin
     if (gBoard[i][j].isShown || gBoard[i][j].isMarked) return
     openCell(i, j)
 
@@ -156,8 +180,8 @@ function cellClicked(elcell, i, j) {
         startTimer()
         isTimer = true
     }
-
-    if (gBoard[i][j].minesAroundCount === 0) {
+    //opening negs cells if only it isnt a mine cell
+    if (gBoard[i][j].minesAroundCount === 0 && !gBoard[i][j].isMine) {
         openNegsCell(i, j)
     }
     renderBoard(gBoard, '.board-container')
@@ -178,6 +202,7 @@ function openNegsCell(i, j) {
 
 function openCell(i, j) {
     // console.log(i, j);
+    if (!gGame.isOn) return
     if (!gBoard[i][j].isMine) {
         if (!gBoard[i][j].isShown) {
             gBoard[i][j].isShown = true
@@ -185,12 +210,16 @@ function openCell(i, j) {
             checkGameOver()
         }
     } else {
-        GameOver()
+        lives.pop()
+        checkGameOver()
+        renderBoard(gBoard, '.board-container')
+        // GameOver()
     }
 }
-// Called on right click to mark a cell (suspected to be a mine) Search the web (and implement) how to hide the context menu on right click. menu is diable👌
+
+
 function cellMarked(elcell, i, j) {
-    if (gBoard[i][j].isShown) return
+    if (gBoard[i][j].isShown || !gGame.isOn) return
     gBoard[i][j].isMarked = !gBoard[i][j].isMarked
     if (gBoard[i][j].isMarked) {
         gGame.markedCount++
@@ -217,16 +246,25 @@ function checkGameOver() {
     // console.log(gLevels.mines);
     if (gGame.shownCount === ((gLevels.size ** 2) - gLevels.mines) && gGame.markedCount === gLevels.mines) {
         console.log('over');
-        alert('👑')
+        winSound.play();
+        // var elSmiley = document.querySelector('.smiley')
+        // elSmiley.innerText = WIN_FACE
+        GameOver()
+    } else if (lives.length === 0) {
         GameOver()
     }
 }
 
+// && lives.length === 0
 function GameOver() {
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard.length; j++) {
-            gBoard[i][j].isShown = true;
-            clearInterval(gIntervalId)
+            if (gBoard[i][j].isMine) {
+                gBoard[i][j].isShown = true
+                gGame.isOn = false
+                clearInterval(gIntervalId)
+                renderBoard(gBoard, '.board-container')
+            }
 
         }
     }

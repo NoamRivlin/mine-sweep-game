@@ -6,12 +6,19 @@ h1 {
 }
 
 body {
-    background-color: rgb(133, 75, 75);
+    background-color: rgb(24, 109, 122);
     background-image: url('/img/fish&mine.jpg');
     background-position: center;
-    background-size: cover;
+    background-size: contain;
     background-attachment: fixed;
+    background-repeat: no-repeat;
 }
+
+/* img {
+    width: 100%;
+    height: auto;
+
+} */
 
 body .timer {
     text-align: center;
@@ -29,21 +36,57 @@ body .timer {
     /* font-size: xx-large; */
 }
 
+.buttons button {
+    border-radius: 5px;
+    font-size: large;
+    transition: 0.4s;
+
+}
+
+.buttons button:hover {
+    /* why is the transition here unnecessary? */
+    transition: 0.9s;
+    background-color: blueviolet;
+    color: aliceblue;
+    font-size: x-large;
+    text-shadow: 1px -1px 1px;
+    transform: rotate(-20deg);
+    cursor: pointer;
+}
+
+.tries {
+    text-align: center;
+    font-size: xx-large;
+
+}
+
+.smiley {
+    text-align: center;
+    font-size: 50px;
+    /* margin-top: 10px;
+    margin-bottom: 10px; */
+    /* width: 100%; */
+}
+
 td:hover {
     background-color: rgb(122, 168, 208);
     transition: 0.4s;
+    cursor: pointer;
 }
 
 td {
     width: 25px;
     height: 25px;
     padding: 13px;
+    /* transition: 1s; */
     /* border: solid; */
 }
 
+/* transitions not working in td's */
 td.shown {
     background-color: rgb(98, 153, 81);
-    transition: background-color 1s;
+    /* transition: background-color 1s; */
+
 }
 
 table {
@@ -55,8 +98,10 @@ table {
 footer {
     position: fixed;
     width: 100%;
+    /* margin-left: 50px; */
     font-size: larger;
     bottom: 0;
     text-align: center;
-    background-color: aqua;
+    /* background-color: rgb(67, 143, 143); */
+    color: rgb(222, 236, 162);
 }
